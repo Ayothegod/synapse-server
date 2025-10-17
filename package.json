@@ -1,0 +1,20 @@
+{
+  "name": "modular-server",
+  "version": "1.0.0",
+  "description": "server modular monolith base setup",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev:backend": "pnpm --filter server run dev",
+    "dev:single": "pnpm -r run dev",
+    "build:backend": "pnpm --filter server run build",
+    "build": "pnpm --filter server run build",
+    "real:build": "pnpm -r run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
