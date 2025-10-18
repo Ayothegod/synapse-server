@@ -1,11 +1,3 @@
-import { z } from "zod";
-
-export const registerSchema = z.object({
-  fullname: z
-    .string({ required_error: "fullname is required" })
-    .min(3, "fullname must be at least 3 characters")
-});
-
 // IngestAgent
 // Input: file / URL / connector event
 
@@ -22,6 +14,21 @@ export const registerSchema = z.object({
 // Store clean text in Postgres (documents table).
 // Emit DocumentReady event → triggers next stage.
 // ```json 
-// Flow:
+// Flow:  
 // Raw File → ExtractText() → Normalize() → SaveToPostgres() → Emit(DocumentReady)
 // ```
+
+import { Router } from "express";
+import { asyncHandler } from "../../core/middlewares/asyncHandler.js";
+import { validate } from "../../core/middlewares/validateZod.js";
+import IngestController from "./ingest.controller.js";
+
+const router = Router();
+
+router.post(
+  "/:source",
+  // validate(loginSchema),
+  asyncHandler(IngestController.connect)
+);
+
+export default router;

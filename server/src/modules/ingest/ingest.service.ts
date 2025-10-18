@@ -1,7 +1,40 @@
+// import { httpStatus } from "../../shared/utils/constants.js";
+
+class Connect {
+  static async extractFromPDF(payload: any) {
+    return "pdf"
+  }
+  static async extractFromDocx(payload: any) {
+    return "docx"
+  }
+  static async ingestEmail(payload: any) {
+    return "email"
+  }
+  static async ingestDrive() {
+    return "drive"
+  }
+  static async ingestNotion() {
+    return "notion"
+  }
+}
+// export default Connect
+
+export const connectors = {
+  docs: async (payload: any, query: { type: "pdf" | "docx" }) => {
+    const { type } = query;
+    if (type === "pdf") return Connect.extractFromPDF(payload);
+    if (type === "docx") return Connect.extractFromDocx(payload);
+    throw new Error("Unsupported document type");
+  },
+  email: Connect.ingestEmail,
+  drive: Connect.ingestDrive,
+  notion: Connect.ingestNotion,
+};
+
 // const fs = require('fs');
 // const csvParser = require('csv-parser');
 // const { MongoClient } = require('mongodb');
-// const csvDataPath = 'data.csv'; 
+// const csvDataPath = 'data.csv';
 
 // require('dotenv').config();
 
@@ -27,7 +60,6 @@
 //   });
 // };
 
-
 // // Transform Phase
 // const transformData = (csvData) => {
 //   return csvData.map((items) => ({
@@ -36,12 +68,11 @@
 //   }));
 // };
 
-
 // const dbUrl = process.env.MONGODB_URL;
 
 // const connectionString = `${dbUrl}`;
-// const databaseName = process.env.MONGODB_DATABASE || 'etldb'; 
-// const collectionName = 'users'; 
+// const databaseName = process.env.MONGODB_DATABASE || 'etldb';
+// const collectionName = 'users';
 
 // // Load Phase
 // const loadData = async (transformedData, databaseName, collectionName, connectionString) => {
