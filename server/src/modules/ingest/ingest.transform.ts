@@ -1,4 +1,4 @@
-import Extract from "./ingest.extract";
+import Extract, { Link } from "./ingest.extract";
 import { v4 as uuidv4 } from "uuid";
 interface UnifiedDoc {
   id: string;
@@ -11,16 +11,12 @@ interface UnifiedDoc {
     row?: number; // for csv
     author?: string;
     createdAt?: string;
+    links?: Link[];
     [key: string]: any;
   };
 }
 
-class Transform {
-  static async Pdf(file: Express.Multer.File) {
-
-    const { cleanPdf } = await Extract.extractFromPDF(file);
-
-//     function chunkText(text, maxLength = 100) {
+// function chunkText(text: string, maxLength = 200) {
 //   const chunks = [];
 //   for (let i = 0; i < text.length; i += maxLength) {
 //     chunks.push(text.slice(i, i + maxLength));
@@ -28,16 +24,51 @@ class Transform {
 //   return chunks;
 // }
 
-    //     pdfPages.forEach((page, i) => {
-    //   docs.push({
-    //     id: uuid(),
-    //     source: "pdf",
-    //     title: fileName,
-    //     content: page.text,
-    //     metadata: { page: i + 1 }
-    //   });
-    // });
-    return cleanPdf
+function chunkText(text: string, maxLength = 200) {
+  const lines = text.split(/\n+/); // split on one or more newlines
+  const chunks = [];
+  let current = "";
+
+  for (const line of lines) {
+    if ((current + line).length > maxLength) {
+      chunks.push(current.trim());
+      current = line;
+    } else {
+      current += (current ? " " : "") + line;
+    }
+  }
+
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
+}
+
+class Transform {
+  static async Pdf(file: Express.Multer.File) {
+    const data: UnifiedDoc[] = [];
+
+    const { cleanPdf } = await Extract.extractFromPDF(file);
+
+    const chunks = chunkText(cleanPdf.text);
+
+    for (const [i, row] of chunks.entries()) {
+      const PdfRow: UnifiedDoc = {
+        id: uuidv4(),
+        source: "pdf",
+        fileName: file?.originalname as string,
+        title: cleanPdf.Title,
+        content: row,
+        metadata: {
+          page: cleanPdf.totalPages,
+          row: i + 1,
+          createdAt: new Date().toDateString(),
+          author: cleanPdf?.Author,
+          links: cleanPdf.links,
+        },
+      };
+      data.push(PdfRow);
+    }
+
+    return data;
   }
   static async Docx() {
     //     paragraphs.forEach((text, i) => {

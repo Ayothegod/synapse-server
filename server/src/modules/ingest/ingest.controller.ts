@@ -56,3 +56,11 @@ class IngestController {
 }
 
 export default IngestController;
+
+
+// {
+//     "totalPages": 2,
+//     "Title": "National Youth Service Corps",
+//     "links": [],
+//     "text": "ADDENDUM\nN.B* Prospective Corps Members are strongly advised Not to travel at Night\ni. rmal ethics will not be tolerated\nvii. Beware ofe to come along with a signed copy of this Addendum.\n_______________________________________________\nAdebisi Ayomide Idris\nSign and Date\n22/04/2025, 16:56 \tNational Youth Service Corps\nhttps://portal.nysc.org.ng/nysc1/CorpHome.aspx \t2/2\n-- 2 of 2 --"
+//   },

@@ -11,7 +11,7 @@ import { ApiError } from "@/core/errors/ApiError";
 // const __dirname = path.dirname(__filename);
 // const pdfDataPath = path.join(__dirname, "../../assets/addendum.pdf");
 
-interface Link {
+export interface Link {
   text: string;
   url: string;
 }
