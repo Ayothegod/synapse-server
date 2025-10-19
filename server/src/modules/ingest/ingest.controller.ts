@@ -20,11 +20,17 @@ class IngestController {
         "No file to ingest, choose a file and try again!"
       );
 
-    if (source !== file.mimetype.split("/")[1])
+    const filePath = file.path;
+    if (source !== file.mimetype.split("/")[1]) {
+      fs.unlink(filePath, (err) => {
+        if (err) console.error(err);
+        else null;
+      });
       throw new ApiError(
         httpStatus.forbidden,
         "File type not the same as connector option!"
       );
+    }
 
     const connector = connectors[source];
     if (!connector)
@@ -36,7 +42,6 @@ class IngestController {
     const result = await connector(file);
 
     // delete file from disk
-    const filePath = file.path;
     fs.unlink(filePath, (err) => {
       if (err) console.error(err);
       else null;
