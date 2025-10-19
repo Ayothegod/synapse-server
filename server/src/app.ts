@@ -4,7 +4,7 @@ import express, { Request, Response } from "express";
 import { ApiResponse } from "./core/middlewares/ApiResponse.js";
 import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { errorHandler } from "./core/middlewares/error.middleware.js";
-import authRoutes from "./modules/auth/auth.routes.js";
+import ingestRoutes from "./modules/ingest/ingest.route.js";
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.get(
   })
 );
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/ingest", ingestRoutes);
 
 app.use(errorHandler as any);
 
