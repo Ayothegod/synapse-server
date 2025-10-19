@@ -17,6 +17,7 @@ interface UnifiedDoc {
 
 class Transform {
   static async Pdf(file: Express.Multer.File) {
+
     const { cleanPdf } = await Extract.extractFromPDF(file);
 
 //     function chunkText(text, maxLength = 100) {

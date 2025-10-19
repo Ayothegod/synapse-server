@@ -13,17 +13,18 @@ class IngestController {
   static async connect(req: Request<Source>, res: Response) {
     const { source } = req.params;
     const file = req.file;
-    console.log(file);
-    
+
     if (!file)
       throw new ApiError(
-        404,
+        httpStatus.badRequest,
         "No file to ingest, choose a file and try again!"
       );
 
-      console.log(file.mimetype.split("/")[1]);
-      
-    // if(file.mimetype)
+    if (source !== file.mimetype.split("/")[1])
+      throw new ApiError(
+        httpStatus.forbidden,
+        "File type not the same as connector option!"
+      );
 
     const connector = connectors[source];
     if (!connector)

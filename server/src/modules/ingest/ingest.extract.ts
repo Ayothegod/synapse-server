@@ -6,34 +6,50 @@ import csvParser from "csv-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Readable } from "stream";
+import { ApiError } from "@/core/errors/ApiError";
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+// const pdfDataPath = path.join(__dirname, "../../assets/addendum.pdf");
+
+interface Link {
+  text: string;
+  url: string;
+}
 
 class Extract {
   static async extractFromPDF(file: Express.Multer.File) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const pdfDataPath = path.join(__dirname, "../../assets/addendum.pdf");
+    try {
+      const buffer = fs.readFileSync(file.path);
+      const parser = new PDFParse({ data: buffer });
 
-    // const buffer = fs.readFileSync(file.buffer);
-    // const parser = new PDFParse({ data: file.buffer });
+      const info = await parser.getInfo({ parsePageInfo: true });
+      const textResult = await parser.getText();
+      const result = await parser.getTable();
+      await parser.destroy();
 
-    const buffer = fs.readFileSync(pdfDataPath);
-    const parser = new PDFParse({ data: buffer });
+      const links: Link[] = [];
+      info.pages.map((info) => info.links.map((link) => links.push(link)));
 
-    // parser.getText().then((result) => {
-    //   console.log(result.text);
-    // });
+      // console.log(textResult.text);
+      for (const pageData of result.pages) {
+        for (const table of pageData.tables) {
+          console.log({ table });
+        }
+      }
 
-    const info = await parser.getInfo({ parsePageInfo: true });
-    await parser.destroy();
+      const data = {
+        totalPages: info.total,
+        Title: info.info?.Title,
+        Author: info.info?.Author,
+        links,
+        text: textResult.text,
+      };
+      return { cleanPdf: data };
+    } catch (error) {
+      console.log({ error });
 
-    console.log(`Total pages: ${info.total}`);
-    console.log(`Title: ${info.info?.Title}`);
-    console.log(`Author: ${info.info?.Author}`);
-
-    // Links, pageLabel, width, height (when `parsePageInfo` is true)
-    console.log(`Per-page information: ${info.pages}`);
-    info.pages.map((info) => console.log({ info })  );
-    return { cleanPdf: "cleanPdf" };
+      throw new ApiError(404, "Error while parsing pdf file!");
+    }
   }
   static async extractFromDocx(filePath?: any) {
     //     const result = await mammoth.extractRawText({ path: filePath });
