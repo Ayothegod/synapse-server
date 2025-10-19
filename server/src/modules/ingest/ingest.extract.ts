@@ -30,10 +30,12 @@ class Extract {
       const links: Link[] = [];
       info.pages.map((info) => info.links.map((link) => links.push(link)));
 
-      // console.log(textResult.text);
-      for (const pageData of result.pages) {
-        for (const table of pageData.tables) {
-          console.log({ table });
+      const tables: string[] = [];
+      for (const page of result.pages) {
+        if (!page.tables) continue;
+
+        for (const [tableIndex, table] of page.tables.entries()) {
+          const tableText = table.map((row) => tables.push(row));
         }
       }
 
@@ -42,7 +44,8 @@ class Extract {
         Title: info.info?.Title,
         Author: info.info?.Author,
         links,
-        text: textResult.text,
+        // tables: tables?.filter((r) => r.length > 1),
+        text: textResult.text.trim(),
       };
       return { cleanPdf: data };
     } catch (error) {
