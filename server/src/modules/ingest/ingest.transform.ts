@@ -15,30 +15,20 @@ interface UnifiedDoc {
   };
 }
 
-  // {
-  //   id: 'a2471f8b-1cee-42f2-835d-3891116c5571',
-  //   source: 'csv',
-  //   fileName: 'data.csv',
-  //   title: 'NAME CAREER',
-  //   content: 'WIsdom Nwokocha TECHNICAL WRITER',
-  //   metadata: { page: 1, row: 4, createdAt: 'Sun Oct 19 2025' }
-  // }
-
 class Transform {
   static async Pdf() {}
   static async Docx() {}
-  static async Csv(fileName: string) {
+  static async Csv(file: Express.Multer.File) {
     const data: UnifiedDoc[] = [];
 
-    const { cleanCsv } = await Extract.extractFromCsv();
-    console.log(cleanCsv);
-    
+    const { cleanCsv } = await Extract.extractFromCsv(file);
+    // console.log(cleanCsv);
 
     for (const [i, row] of cleanCsv.entries()) {
       const csvRow: UnifiedDoc = {
         id: uuidv4(),
         source: "csv",
-        fileName,
+        fileName: file?.originalname as string,
         title: Object.keys(row).join(" ").trim(),
         content: Object.values(row).join(" "),
         metadata: {

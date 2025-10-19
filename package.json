@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "dev:backend": "pnpm --filter server run dev",
+    "dev": "pnpm --filter server run dev",
     "dev:single": "pnpm -r run dev",
     "build:backend": "pnpm --filter server run build",
     "build": "pnpm --filter server run build",
