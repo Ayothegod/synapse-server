@@ -13,13 +13,17 @@ class IngestController {
   static async connect(req: Request<Source>, res: Response) {
     const { source } = req.params;
     const file = req.file;
-    console.log({ file });
-
+    console.log(file);
+    
     if (!file)
       throw new ApiError(
         404,
         "No file to ingest, choose a file and try again!"
       );
+
+      console.log(file.mimetype.split("/")[1]);
+      
+    // if(file.mimetype)
 
     const connector = connectors[source];
     if (!connector)
@@ -29,26 +33,19 @@ class IngestController {
       );
 
     const result = await connector(file);
-    console.log(connector, result);
-    // const doc = await saveDocument(result);
-    // await emitEvent(`${source}.ingested`, doc);
-
-    // const transformed = {
-    //   text: extracted.text.trim(),
-    //   source: extracted.metadata.source,
-    //   metadata: extracted.metadata,
-    // };
-    //     const doc = await saveDocument(transformed);
-    // await emitEvent("document.ingested", doc);
 
     // delete file from disk
     const filePath = file.path;
     fs.unlink(filePath, (err) => {
       if (err) console.error(err);
-      else null
+      else null;
     });
 
-    res.status(200).json(new ApiResponse(httpStatus.ok, null, "msg"));
+    res
+      .status(201)
+      .json(
+        new ApiResponse(httpStatus.ok, result, "workflow.extract.completed")
+      );
   }
 }
 

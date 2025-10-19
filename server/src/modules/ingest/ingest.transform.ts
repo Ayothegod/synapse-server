@@ -16,8 +16,39 @@ interface UnifiedDoc {
 }
 
 class Transform {
-  static async Pdf() {}
-  static async Docx() {}
+  static async Pdf(file: Express.Multer.File) {
+    const { cleanPdf } = await Extract.extractFromPDF(file);
+
+//     function chunkText(text, maxLength = 100) {
+//   const chunks = [];
+//   for (let i = 0; i < text.length; i += maxLength) {
+//     chunks.push(text.slice(i, i + maxLength));
+//   }
+//   return chunks;
+// }
+
+    //     pdfPages.forEach((page, i) => {
+    //   docs.push({
+    //     id: uuid(),
+    //     source: "pdf",
+    //     title: fileName,
+    //     content: page.text,
+    //     metadata: { page: i + 1 }
+    //   });
+    // });
+    return cleanPdf
+  }
+  static async Docx() {
+    //     paragraphs.forEach((text, i) => {
+    //   docs.push({
+    //     id: uuid(),
+    //     source: "docx",
+    //     title: fileName,
+    //     content: text,
+    //     metadata: { paragraph: i }
+    //   });
+    // });
+  }
   static async Csv(file: Express.Multer.File) {
     const data: UnifiedDoc[] = [];
 
@@ -40,16 +71,7 @@ class Transform {
       data.push(csvRow);
     }
 
-    console.log(data);
-    
-
-    //     const response = await collection.insertMany(transformedData);
-    //     console.log(`${response.insertedCount} CSV Data Successfully loaded to MongoDB.`);
-
-    //   .catch((error) => {
-    //     console.error('Failed to extract or load data into MongoDB:', error);
-    //   });
-    return "transform";
+    return data;
   }
 }
 
@@ -61,3 +83,23 @@ export const connectors = {
   // drive: Connect.ingestDrive,
   // notion: Connect.ingestNotion,
 };
+
+// Employees
+//   {
+//     id: '09454441-e301-4a62-a61a-bb53dace42a1',
+//     source: 'csv',
+//     fileName: 'employees.csv',
+//     title: 'id name department salary',
+//     content: '3 Charlie HR 45000',
+//     metadata: { page: 1, row: 3, createdAt: 'Sun Oct 19 2025' }
+//   }
+
+// Fashion
+//   {
+//     id: 'a3d8c199-e0fe-49fb-b689-800661fd4231',
+//     source: 'csv',
+//     fileName: 'styles.csv',
+//     title: 'id gender masterCategory subCategory articleType baseColour season year usage productDisplayName',
+//     content: '43967 Women Personal Care Fragrance Perfume and Body Mist Red Spring 2017 Casual DKNY Women Red Delicious Perfume',
+//     metadata: { page: 1, row: 100, createdAt: 'Sun Oct 19 2025' }
+//   },
