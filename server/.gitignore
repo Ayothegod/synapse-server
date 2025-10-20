@@ -12,3 +12,5 @@ prisma/migrations
 logs
 
 uploads
+data.csv
+assets

@@ -1,5 +1,6 @@
 import Extract, { Link } from "./ingest.extract";
 import { v4 as uuidv4 } from "uuid";
+
 interface UnifiedDoc {
   id: string;
   source: string; // "csv" | "pdf" | "docx"
@@ -15,14 +16,6 @@ interface UnifiedDoc {
     [key: string]: any;
   };
 }
-
-// function chunkText(text: string, maxLength = 200) {
-//   const chunks = [];
-//   for (let i = 0; i < text.length; i += maxLength) {
-//     chunks.push(text.slice(i, i + maxLength));
-//   }
-//   return chunks;
-// }
 
 function chunkText(text: string, maxLength = 200) {
   const lines = text.split(/\n+/); // split on one or more newlines
@@ -115,23 +108,3 @@ export const connectors = {
   // drive: Connect.ingestDrive,
   // notion: Connect.ingestNotion,
 };
-
-// Employees
-//   {
-//     id: '09454441-e301-4a62-a61a-bb53dace42a1',
-//     source: 'csv',
-//     fileName: 'employees.csv',
-//     title: 'id name department salary',
-//     content: '3 Charlie HR 45000',
-//     metadata: { page: 1, row: 3, createdAt: 'Sun Oct 19 2025' }
-//   }
-
-// Fashion
-//   {
-//     id: 'a3d8c199-e0fe-49fb-b689-800661fd4231',
-//     source: 'csv',
-//     fileName: 'styles.csv',
-//     title: 'id gender masterCategory subCategory articleType baseColour season year usage productDisplayName',
-//     content: '43967 Women Personal Care Fragrance Perfume and Body Mist Red Spring 2017 Casual DKNY Women Red Delicious Perfume',
-//     metadata: { page: 1, row: 100, createdAt: 'Sun Oct 19 2025' }
-//   },
