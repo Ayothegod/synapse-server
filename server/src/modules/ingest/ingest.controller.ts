@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { connectors } from "./ingest.transform";
 import { ApiError } from "@/core/errors/ApiError";
 import fs from "fs";
+import { mastraClient } from "@/core/config/mastra";
 
 interface Source {
   source: "pdf" | "docx" | "csv"; // "email" | "notion" | "drive"
@@ -47,16 +48,53 @@ class IngestController {
       else null;
     });
 
+    const tool = await mastraClient.getTool("ingest-tool");
+    const agent = await mastraClient.getAgent("orchestratorAgent");
+
+    // const toolResult = await tool.execute({
+    //   data: {
+    //     input: result
+    //   },
+    //   runId: "test-1",
+    // });
+    
+    const response = await agent.generate({
+      messages: [
+        {
+          role: "user",
+          content: `
+          {
+ input: [
+    {
+      id: "280d2864-cf63-447b-a20a-168e2035819f",
+      source: "csv",
+      fileName: "data.csv",
+      title: "NAME CAREER _2",
+      content: "REV ONUCHE  SOFTWARE DEVELOPER ",
+      metadata: {
+        page: 1,
+        row: 1,
+        createdAt: "Mon Oct 20 2025",
+      }]}
+        `,
+      },
+    ],
+    threadId: "thread-1", // Optional: Thread ID for conversation context
+    resourceId: "resource-1", // Optional: Resource ID
+    output: {},
+  });
+  // activeTools: ["ingest-tool"],
+  console.log(response);
+
     res
       .status(201)
       .json(
-        new ApiResponse(httpStatus.ok, result, "workflow.extract.completed")
+        new ApiResponse(httpStatus.ok, { result }, "workflow.extract.completed")
       );
   }
 }
 
 export default IngestController;
-
 
 // {
 //     "totalPages": 2,

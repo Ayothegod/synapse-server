@@ -21,9 +21,21 @@ app.use(cookieParser());
 app.use(express.json({ limit: "5mb" }));
 
 app.get(
-  "/api/v1/test",
+  "/api/v1/health",
   asyncHandler(async (req: Request, res: Response) => {
     // console.log(req.session);
+
+    const response = await fetch(
+      "http://localhost:4111/api/agents/weatherAgent",
+      {
+        // method: "POST",
+        // headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify({ filePath }),
+      }
+    );
+    const data = await response.json();
+
+    console.log({ data });
 
     return res
       .status(200)
@@ -36,3 +48,5 @@ app.use("/api/v1/ingest", ingestRoutes);
 app.use(errorHandler as any);
 
 export default app;
+
+
