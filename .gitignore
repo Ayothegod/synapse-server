@@ -11,3 +11,7 @@ server/node_modules
 client/node_modules
 
 data.csv
+
+mastra.db
+mastra.db-shm
+mastra.db-wal

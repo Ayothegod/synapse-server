@@ -73,16 +73,3 @@ Your response should always include:
     }),
   }),
 });
-
-// const getWeather = async (location: string) => {
-//   return {msg: ""}
-//   // return {
-//   //   temperature: data.current.temperature_2m,
-//   //   feelsLike: data.current.apparent_temperature,
-//   //   humidity: data.current.relative_humidity_2m,
-//   //   windSpeed: data.current.wind_speed_10m,
-//   //   windGust: data.current.wind_gusts_10m,
-//   //   conditions: getWeatherCondition(data.current.weather_code),
-//   //   location: name,
-//   // };
-// };
